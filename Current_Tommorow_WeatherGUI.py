@@ -30,7 +30,7 @@ def increase_window_width():
     win.resizable(0, 0)
 
 def _about():
-    mb = messagebox.showinfo(message='''Script Created By Ben Zikri
+    messagebox.showinfo(message='''Script Created By Ben Zikri
         Version 1.02''', title='About')
 
 def _quit():
