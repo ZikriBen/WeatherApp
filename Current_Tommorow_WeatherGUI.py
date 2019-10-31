@@ -8,11 +8,9 @@ import time
 from tkinter.ttk import Combobox
 
 
+#    Because the classic ttk Combobox does not take a dictionary for values.
 class NewCombobox(Combobox):
-    """
-    Because the classic ttk Combobox does not take a dictionary for values.
-    """
-
+    
     def __init__(self, master, dictionary, *args, **kwargs):
         Combobox.__init__(self, master,
                           values=sorted(list(dictionary.keys())),
@@ -25,19 +23,15 @@ class NewCombobox(Combobox):
         else:
             return self.dictionary[Combobox.get(self)]
 
-
-# Functions
-
+# TK Functions
 
 def increase_window_width():
     win.minsize(width=300, height=1)
     win.resizable(0, 0)
 
-
 def _about():
     mb = messagebox.showinfo(message='''Script Created By Ben Zikri
         Version 1.02''', title='About')
-
 
 def _quit():
     win.quit()
@@ -45,7 +39,6 @@ def _quit():
     exit()
 
 # Create TK instance
-
 
 win = tk.Tk()
 win.title('Weather Checker')
@@ -76,14 +69,15 @@ tab2 = tk.Frame(tabControl)
 tabControl.add(tab2, text='Tomorrow Observations')
 tabControl.pack(expand=1, fill='both')
 
+
+####### Tab 1-current weather status
+
 # Creating labels
 
 weather_condition_frame = ttk.Labelframe(
     tab1, text='Current Weather Condition')
 
 weather_condition_frame.grid(column=0, row=1, padx=8, pady=4)
-# ttk.Label(weather_condition_frame, text='Location: ').grid(column=0, row=0, sticky='W')
-
 weather_cities_frame = ttk.Labelframe(tab1, text='Latest Observation For ')
 weather_cities_frame.grid(column=0, row=0, padx=8, pady=4)
 ttk.Label(weather_cities_frame, text='Location:        ').grid(column=0, row=0)
@@ -95,22 +89,23 @@ citySelected = NewCombobox(weather_cities_frame, values, width=12, textvariable=
 citySelected.grid(column=1, row=0)
 citySelected.current(0)
 
+# Get city from Combobox then call get weather function which city parameter
 
 def _get_city():
     selected_city = citySelected.get()
     get_weather_data(selected_city)
-    # populate_gui_from_dict()
-
+    
+# Make a button for getting the data to GUI
 
 get_weather_btn = ttk.Button(weather_cities_frame, text='Get Weather', command=_get_city).grid(column=2, row=0)
 
+# Making entries for the values in the GUI
 
 max_width = max([len(x) for x in citySelected['values']])
 new_width = max_width + 2
 citySelected.config(width=new_width)
 
 ENTRY_WIDTH = 24
-
 
 ttk.Label(weather_condition_frame, text='Last Update: ').grid(column=0, row=1, sticky='E')
 updated = tk.StringVar()
@@ -146,8 +141,7 @@ for child in weather_condition_frame.winfo_children():
     child.grid_configure(padx=4, pady=1)
 
 
-# next update the Entry widget with this data
-
+# next we update the Entry widget with this data
 
 def get_weather_data(selected_city):
 
@@ -157,9 +151,7 @@ def get_weather_data(selected_city):
 
     url_general = 'http://api.openweathermap.org/data/2.5/weather?q={},il&appid=ec7767086a74e545346c22459773fd7c&units=metric'
     url = url_general.format(selected_city)
-    # url = 'http://api.openweathermap.org/data/2.5/weather?q=Jerusalem&appid=ec7767086a74e545346c22459773fd7c&units=metric'
-    # kfar_saba_url = 'https://api.openweathermap.org/data/2.5/weather?id=294514&appid=ec7767086a74e545346c22459773fd7c&units=metric'
-
+    
     res = requests.get(url)
     data = res.json()
 
@@ -175,17 +167,12 @@ def get_weather_data(selected_city):
     max_temp.set(max_temp_now)
 
 
-###############################################################################################
-###############################################################################################
-##################################   TAB 2   ##################################################
-###############################################################################################
-###############################################################################################
+####### Tab 2-forcasting tomorrow weather at 12:00 am.
 
 weather_condition_frame2 = ttk.Labelframe(
     tab2, text='Tomorrow Weather Condition')
 
 weather_condition_frame2.grid(column=0, row=1, padx=8, pady=4)
-# ttk.Label(weather_condition_frame, text='Location: ').grid(column=0, row=0, sticky='W')
 
 weather_cities_frame2 = ttk.Labelframe(tab2, text='Latest Observation For ')
 weather_cities_frame2.grid(column=0, row=0, padx=8, pady=4)
@@ -257,8 +244,7 @@ def get_tom_weather_data(selected_city):
 
     api = 'ec7767086a74e545346c22459773fd7c&units=metric'
     url = f'http://api.openweathermap.org/data/2.5/forecast?q={selected_city}&appid={api}'
-    # url = 'http://api.openweathermap.org/data/2.5/weather?q=Jerusalem&appid=ec7767086a74e545346c22459773fd7c&units=metric'
-    # kfar_saba_url = 'https://api.openweathermap.org/data/2.5/weather?id=294514&appid=ec7767086a74e545346c22459773fd7c&units=metric'
+  
     res = requests.get(url)
     data = res.json()
 
@@ -271,10 +257,6 @@ def get_tom_weather_data(selected_city):
             humi_tom = data['list'][i]['main']['humidity']
             break
 
-    # weather_tom = data['list'][i]['weather'][0]['main']
-    # temprature_tom = (data['list'][i]['main']['temp'])
-    # print(weather_tom)
-    # print(temprature_tom)
     updated2.set(tommorow_date.strftime("12:00     %d/%m/%Y"))
     weather2.set(weather_tom)
     temp2.set(temprature_tom)
